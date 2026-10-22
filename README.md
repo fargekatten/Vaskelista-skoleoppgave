@@ -26,7 +26,13 @@ GitHub Pages skal ikke aktiveres for dette prosjektet. GitHub lagrer koden, Verc
 
 `DATABASE_URL` inneholder passord. Legg den kun i Vercels miljøvariabler eller i en lokal `.env.local`. Ikke skriv den i GitHub, en klientkomponent eller en variabel med `NEXT_PUBLIC_` foran. Eksempelfilen inneholder ingen hemmelighet.
 
-Appen har ingen brukerinnlogging: alle som har nettadressen kan registrere, slette og endre innstillingene. Et privat GitHub-repository gjør kildekoden privat, men begrenser ikke tilgang til selve appen.
+Appen har innlogging (brukernavn `inger`, `lisa`, `leander`, `vegard`; passord settes med `INITIAL_PASSWORD` første gang appen starter). Innlogget person er alltid kjent, så personvalg er fjernet.
+
+## Docker (lokalt)
+
+Kopier `.env.example` til `.env`, sett `POSTGRES_PASSWORD` og `INITIAL_PASSWORD`, og kjør `docker compose up --build`. Appen åpnes på http://127.0.0.1:8080. Databasen har ingen eksponert port og nås kun via Docker-nettverket.
+
+Tidligere: alle som har nettadressen kunne registrere, slette og endre innstillingene. Et privat GitHub-repository gjør kildekoden privat, men begrenser ikke tilgang til selve appen.
 Oppgaver som er begrenset til enkelte personer skjules fra standardlisten og fellesoversiktene. De vises når en person som kan registrere oppgaven velges. Tagger er bare filtre og gir ikke tilgangskontroll.
 
 ## Hva følger med?

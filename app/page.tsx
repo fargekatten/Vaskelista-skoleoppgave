@@ -92,7 +92,7 @@ const dateLabel = (d: string) =>
     month: "short",
     year: "numeric",
   });
-export default function Home() {
+function Tasks({ me, onLogout }: { me: number; onLogout: () => void }) {
   const [data, setData] = useState<Data | null>(null),
     [activeTab, setActiveTab] = useState("list"),
     [error, setError] = useState(""),
@@ -101,7 +101,6 @@ export default function Home() {
     [year, setYear] = useState(today().slice(0, 4)),
     [onlyRemaining, setOnlyRemaining] = useState(false),
     [frequencies, setFrequencies] = useState<string[]>([]),
-    [selectedPerson, setSelectedPerson] = useState<number | null>(null),
     [selectedTag, setSelectedTag] = useState(""),
     [privateYearTag, setPrivateYearTag] = useState("all"),
     [developerTagFilter, setDeveloperTagFilter] = useState("all"),
@@ -129,12 +128,14 @@ export default function Home() {
     [savingAbsence, setSavingAbsence] = useState(false),
     [pending, setPending] = useState(false),
     [draft, setDraft] = useState(defaults);
+  const selectedPerson = me;
   const lock = useRef(false),
     seq = useRef(0);
   async function refresh() {
     const id = ++seq.current;
     const r = await fetch("/api/house", { cache: "no-store" });
     const d: any = await r.json();
+    if (r.status === 401) onLogout();
     if (!r.ok) throw Error(d.error);
     if (id === seq.current) {
       setData(d);
@@ -153,7 +154,6 @@ export default function Home() {
   useEffect(() => {
     const resetPersonFilter = () => {
       if (document.visibilityState === "hidden") {
-        setSelectedPerson(null);
         setFrequencies([]);
         setSelectedTag("");
         setOnlyRemaining(false);
@@ -682,13 +682,13 @@ export default function Home() {
           <h1>Husarbeid</h1>
         </div>
         <span className="household">Inger · Lisa · Leander · Vegard</span>
+        <button type="button" className="textbutton" onClick={onLogout}>Logg ut ({people[me]})</button>
       </header>
       <Tabs
         value={activeTab}
         onValueChange={(value) => {
           setActiveTab(value);
           if (value !== "list") {
-            setSelectedPerson(null);
             setFrequencies([]);
             setSelectedTag("");
             setOnlyRemaining(false);
@@ -730,10 +730,9 @@ export default function Home() {
             <TabsContent value="list">
               <div className="sectionhead">
                 <div>
-                  <h2>{selectedPerson === null ? "Fellesoppgavene" : `Oppgaver for ${people[selectedPerson]}`}</h2>
-                  <p>{selectedPerson === null ? "Trykk på navnet ditt under for å se oppgavene du kan registrere." : `Viser oppgaver ${people[selectedPerson]} kan registrere.`}</p>
+                  <h2>{`Oppgaver for ${people[selectedPerson]}`}</h2>
+                  <p>{`Viser oppgaver ${people[selectedPerson]} kan registrere.`}</p>
                 </div>
-                {selectedPerson !== null && <button type="button" className="textbutton" onClick={() => { setSelectedPerson(null); setFrequencies([]); setSelectedTag(""); setOnlyRemaining(false); setDetailTask(null); setCheckedSubtasks({}); }}>Tilbake til fellesoppgaver</button>}
               </div>
               <span className="pill">Registrerer på dagens dato</span>
               <div className="list-toolbar">
@@ -776,9 +775,6 @@ export default function Home() {
                     {frequency === "Kvartal" ? "Kvartalsvis" : frequency}
                   </button>
                 ))}
-              </div>
-              <div className="task-filters person-filters" role="group" aria-label="Vis oppgaver for person">
-                {people.map((person, index) => <button key={person} type="button" className={`person${index}`} aria-pressed={selectedPerson === index} onClick={() => { setSelectedPerson(selectedPerson === index ? null : index); setFrequencies([]); setSelectedTag(""); setOnlyRemaining(false); setDetailTask(null); setCheckedSubtasks({}); }}>{person}</button>)}
               </div>
               {availableTags.length > 0 && (
                 <div className="task-filters tag-filters" role="group" aria-label="Filtrer oppgaver etter tag">
@@ -1542,4 +1538,55 @@ export default function Home() {
       </footer>
     </main>
   );
+}
+
+export default function Home() {
+  const [me, setMe] = useState<number | null>(null),
+    [checked, setChecked] = useState(false),
+    [username, setUsername] = useState(""),
+    [password, setPassword] = useState(""),
+    [loginError, setLoginError] = useState("");
+  useEffect(() => {
+    fetch("/api/auth", { cache: "no-store" })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((d) => setMe(d?.user?.person ?? null))
+      .catch(() => {})
+      .finally(() => setChecked(true));
+  }, []);
+  async function submit(e: React.FormEvent) {
+    e.preventDefault();
+    setLoginError("");
+    const r = await fetch("/api/auth", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "login", username, password }),
+    });
+    const d: any = await r.json().catch(() => ({}));
+    if (r.ok) {
+      setPassword("");
+      setMe(d.user.person);
+    } else setLoginError(d.error ?? "Kunne ikke logge inn.");
+  }
+  async function logout() {
+    await fetch("/api/auth", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ action: "logout" }),
+    }).catch(() => {});
+    setMe(null);
+  }
+  if (!checked) return null;
+  if (me === null)
+    return (
+      <main>
+        <form onSubmit={submit} style={{ maxWidth: 320, margin: "4rem auto", display: "grid", gap: 12 }}>
+          <h1>Logg inn</h1>
+          <label>Brukernavn<input value={username} onChange={(e) => setUsername(e.target.value)} autoComplete="username" required style={{ display: "block", width: "100%" }} /></label>
+          <label>Passord<input type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" required style={{ display: "block", width: "100%" }} /></label>
+          {loginError && <p role="alert">{loginError}</p>}
+          <button type="submit">Logg inn</button>
+        </form>
+      </main>
+    );
+  return <Tasks key={me} me={me} onLogout={logout} />;
 }
