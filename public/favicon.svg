@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="paper" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fff8ed"/>
+      <stop offset="1" stop-color="#f2dfc6"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#paper)"/>
+  <circle cx="388" cy="119" r="38" fill="#eab57f"/>
+  <path d="M66 226 256 70l190 156h-49L256 112 115 226Z" fill="#d47d5e"/>
+  <path d="M113 212h286v205H113z" fill="#416a5e"/>
+  <path d="M153 254h60v55h-60zm146 0h60v55h-60z" rx="8" fill="#fff1d9"/>
+  <path d="M222 321h68v96h-68z" fill="#f2c68f"/>
+  <circle cx="276" cy="369" r="4" fill="#416a5e"/>
+  <path d="M357 156h37m-18-18v37" stroke="#fff8ed" stroke-width="8" stroke-linecap="round"/>
+  <path d="M0 414h512v98H0z" fill="#294f47"/>
+  <text x="256" y="467" text-anchor="middle" fill="#fff8ed" font-family="Georgia,serif" font-size="45" font-weight="700">Casa Caos</text>
+  <text x="256" y="495" text-anchor="middle" fill="#e7cda9" font-family="Arial,sans-serif" font-size="13" font-weight="700" letter-spacing="4">VASKELISTA</text>
+</svg>

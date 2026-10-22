@@ -2,10 +2,28 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Casa Caos – Vaskelista",
-  description: "Personlig oversikt over husarbeid",
+  title: "Husarbeid – kollektivet",
+  description: "Felles oppgaver, poeng og historikk for kollektivet.",
+  icons: {
+    icon: "/favicon.svg",
+    shortcut: "/favicon.svg",
+    apple: "/apple-touch-icon.png",
+  },
+  appleWebApp: {
+    capable: true,
+    title: "Casa Caos",
+    statusBarStyle: "default",
+  },
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="no"><body>{children}</body></html>;
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="nb">
+      <body className="antialiased">{children}</body>
+    </html>
+  );
 }
