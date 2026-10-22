@@ -1,0 +1,38 @@
+* { box-sizing: border-box; }
+body { margin: 0; background: #f5f3ee; color: #292e2d; font-family: Arial, Helvetica, sans-serif; }
+button, input, textarea, select { font: inherit; }
+button { border: 0; border-radius: 10px; padding: 12px 18px; background: #35675b; color: white; cursor: pointer; font-weight: 700; }
+button:hover { background: #285146; }
+.secondary { background: #e6ebe8; color: #31443e; }
+.secondary:hover { background: #d5dfda; }
+.login-shell { min-height: 100vh; display: grid; place-items: center; padding: 24px; }
+.login-card { width: min(440px, 100%); }
+.page-shell { width: min(980px, calc(100% - 32px)); margin: 32px auto; display: grid; gap: 20px; }
+.topbar { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+h1, h2, p { margin-top: 0; }
+h1 { margin-bottom: 0; font-size: 32px; }
+h2 { font-size: 20px; margin-bottom: 16px; }
+.eyebrow { color: #54786b; letter-spacing: .15em; font-weight: 800; font-size: 12px; margin-bottom: 6px; }
+.account { display: flex; align-items: center; gap: 12px; }
+.card { background: white; border: 1px solid #e2e3de; border-radius: 16px; padding: 24px; box-shadow: 0 6px 24px #2b352a0b; }
+.stack, .task-form { display: grid; gap: 14px; }
+.task-form { grid-template-columns: 1fr 1fr; align-items: end; }
+label { display: grid; gap: 6px; color: #46534e; font-size: 14px; font-weight: 600; }
+input, textarea, select { width: 100%; border: 1px solid #cfd6d1; border-radius: 9px; padding: 11px 12px; color: #292e2d; background: white; }
+textarea { min-height: 44px; resize: vertical; }
+.hint, .message { margin: 18px 0 0; font-size: 13px; color: #6d7772; }
+.message { color: #a33c35; }
+.list-heading { display: flex; justify-content: space-between; gap: 20px; align-items: end; margin-bottom: 12px; }
+.list-heading h2 { margin-bottom: 5px; }
+.list-heading p { margin: 0; color: #69746f; font-size: 14px; }
+.search { min-width: 230px; }
+.chore-list { border-top: 1px solid #e7e9e6; }
+.chore { display: flex; gap: 14px; align-items: center; padding: 15px 2px; border-bottom: 1px solid #e7e9e6; }
+.chore > input { width: 20px; height: 20px; }
+.chore-info { flex: 1; }
+.edit-form { flex: 1; display: grid; gap: 8px; grid-template-columns: 1fr 1fr; }
+.chore-info p { margin: 4px 0; color: #596660; }
+.chore-info small { color: #718078; }
+.done { text-decoration: line-through; color: #75807a; }
+.empty { padding: 24px 0 6px; color: #69746f; }
+@media (max-width: 650px) { .topbar, .account, .list-heading { align-items: stretch; flex-direction: column; } .task-form, .edit-form { grid-template-columns: 1fr; } .account { gap: 8px; } .search { min-width: 0; } .card { padding: 18px; } }

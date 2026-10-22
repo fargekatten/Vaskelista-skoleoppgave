@@ -1,7 +1,5 @@
-node_modules/
-.next/
-out/
-.vercel/
+node_modules
+.next
 .env*
 !.env.example
-*.tsbuildinfo
+npm-debug.log*

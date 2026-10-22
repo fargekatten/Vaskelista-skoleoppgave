@@ -1,31 +1,34 @@
-# Casa Caos – Vaskelista
+# Casa Caos – Assignment 2
 
-Dette er en kopi av kildekoden til Casa Caos sin vaskeliste. Repositoryet inneholder ikke produksjonsdata, databasepassord eller en aktiv kobling til en database eller publisert nettside.
+En liten, lokal husarbeidsapp inspirert av vaskelista. Hver testbruker kan logge inn og opprette, vise, redigere, fullføre og slette sine egne oppgaver. Oppgavene har fritekstbeskrivelse, hyppighet og poeng. Søkefeltet søker i navn og beskrivelse.
 
-## Lokal kjøring
+## Start med Docker Desktop
 
-Prosjektet krever Node.js 22.13 eller nyere og en PostgreSQL-database. Databasen må opprettes separat ved hjelp av `database/setup.sql`. Kopier `.env.example` til `.env.local` og fyll inn `DATABASE_URL` for databasen du selv vil bruke. Uten denne variabelen kobler appen seg ikke til noen database.
+Åpne Ledetekst i denne mappen og kjør:
 
-```sh
-npm ci
-npm run dev
+```text
+docker compose up --build
 ```
 
-Åpne deretter `http://localhost:3000`.
+Når webtjenesten har startet, åpne http://127.0.0.1:8080. Stopp den med `Ctrl+C`, eller kjør `docker compose down` i et nytt Ledetekst-vindu.
 
-Kontroller kildekoden med:
+Databasen nullstilles med `docker compose down -v` og startes på nytt med seed-data neste gang du kjører `docker compose up --build`.
 
-```sh
-npm run typecheck
-npm run build
-```
+## Syntetiske testkontoer
 
-## Innhold
+| Brukernavn | Passord |
+| --- | --- |
+| alice | alice123 |
+| bob | bob123 |
 
-- `app/` – sider, API og stilark
-- `components/ui/` – gjenbrukbare grensesnittkomponenter
-- `database/setup.sql` – SQL-oppsett for tabellene
-- `lib/house.ts` – oppgaver, perioder og poengberegning
-- `lib/store.ts` – databasekobling og lagring
+Oppgavene og kontoene er oppdiktede testdata. Appen bruker PostgreSQL i Docker. Bare webporten er publisert, bundet til `127.0.0.1:8080`; databasen har ingen publisert port.
 
-Appen har ingen brukerinnlogging. Alle som kan åpne en kjørende app kan registrere og endre oppgaver. Ikke legg ekte tilkoblingspassord eller husholdningsdata i dette repositoryet.
+## Funksjoner
+
+- Innlogging og utlogging med økt.
+- Opprette, vise, redigere, fullføre og slette personlige husarbeidsoppgaver.
+- Fritekstfelt for beskrivelse.
+- Søk i oppgavenavn og beskrivelse.
+- Hyppighet og poeng per oppgave.
+
+Se `GENERATION_LOG.md` for prompt- og modellopplysninger.
