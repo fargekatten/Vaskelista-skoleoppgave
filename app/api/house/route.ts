@@ -7,6 +7,7 @@ import {
   today,
   validDate,
 } from "@/lib/house";
+import { currentUser } from "@/lib/auth";
 import { randomUUID } from "node:crypto";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -22,8 +23,11 @@ const normalizeParticipants = (value: unknown) =>
     : value;
 const validId = (id: unknown) =>
   typeof id === "string" && /^[-a-f0-9]{36}$/.test(id);
+const unauthorized = () =>
+  Response.json({ error: "Du må logge inn." }, { status: 401 });
 export async function GET() {
   try {
+    if (!(await currentUser())) return unauthorized();
     const d = await initialize();
     const [tasks, entries, settings, absences] = await Promise.all([
       d.query("SELECT * FROM tasks ORDER BY id"),
@@ -94,6 +98,8 @@ export async function POST(req: Request) {
       req.headers.get("origin") !== new URL(req.url).origin
     )
       return Response.json({ error: "Ugyldig avsender." }, { status: 403 });
+    const me = await currentUser();
+    if (!me) return unauthorized();
     const b: any = await req.json();
     const d = await initialize();
     const setting = async (key: string, value: unknown) => {
@@ -106,6 +112,7 @@ export async function POST(req: Request) {
       const rows = await d.query("SELECT value FROM settings WHERE month=$1", [key]);
       return rows[0] ? JSON.parse(rows[0].value) : null;
     };
+    if (b.action === "add") b.person = me.person;
     if (b.action === "createTag") {
       if (typeof b.name !== "string" || !b.name.trim() || b.name.trim().length > 40)
         throw Error("input");

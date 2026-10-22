@@ -1,4 +1,4 @@
--- Run once in the Neon SQL Editor for the Vaskelista database.
+-- Run once in the Neon SQL Editor for the Vaskelista database (Docker runs it automatically on first start).
 -- CREATE IF NOT EXISTS keeps existing data. Standard tasks are added on first app load.
 BEGIN;
 CREATE TABLE IF NOT EXISTS tasks (
@@ -18,5 +18,13 @@ CREATE TABLE IF NOT EXISTS absences (
  id text PRIMARY KEY, person integer NOT NULL CHECK(person BETWEEN 0 AND 3),
  start text NOT NULL, "end" text NOT NULL,
  dogs_away integer NOT NULL DEFAULT 1, CHECK(start <= "end")
+);
+CREATE TABLE IF NOT EXISTS users (
+ id serial PRIMARY KEY, username text NOT NULL UNIQUE, password_hash text NOT NULL,
+ person integer NOT NULL UNIQUE CHECK(person BETWEEN 0 AND 3)
+);
+CREATE TABLE IF NOT EXISTS sessions (
+ token_hash text PRIMARY KEY, user_id integer NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+ expires timestamptz NOT NULL
 );
 COMMIT;

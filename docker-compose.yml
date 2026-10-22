@@ -1,0 +1,24 @@
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: vaskelista
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: vaskelista
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./database/setup.sql:/docker-entrypoint-initdb.d/setup.sql:ro
+    # No ports: the database is only reachable on the internal Docker network.
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgres://vaskelista:${POSTGRES_PASSWORD}@db:5432/vaskelista
+      INITIAL_PASSWORD: ${INITIAL_PASSWORD:?Set INITIAL_PASSWORD in .env}
+    ports:
+      - "127.0.0.1:8080:3000"
+volumes:
+  db-data:
